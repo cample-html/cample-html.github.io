@@ -11,7 +11,7 @@
   <template data-cample data-src="/api/test" data-method="get"></template>
 </div>
 
-<script src="https://unpkg.com/cample-html@0.0.2"></script>
+<script src="https://unpkg.com/cample-html@0.0.3"></script>
 ```
 
 <b>Server route - /api/test</b>
@@ -27,7 +27,7 @@
   <div>123</div>
 </div>
 
-<script src="https://unpkg.com/cample-html@0.0.2"></script>
+<script src="https://unpkg.com/cample-html@0.0.3"></script>
 ```
 
 ### Why cample-html?
@@ -54,6 +54,47 @@ This product has a discussion platform on [github](https://github.com/cample-htm
 
 In the future, it is planned to maintain social networks, but for now the entire focus is only on the product.
 
+## More examples
+
+### Example 1
+
+(Future versions will implement get and set functionality)
+
+```javascript
+const templateFn = CampleHTML.createTemplate(
+  `<template data-cample data-src="/api/test" data-method="get"></template>`
+);
+
+const elementObj = templateFn();
+
+setTimeout(() => {
+  if (elementObj.element) {
+    console.log(elementObj.element);
+  } else {
+    console.log("The data hasn't arrived yet");
+  }
+}, 1000);
+```
+
+### Example 2
+
+```html
+<div>
+  <button class="getText">Get text</button>
+  <p>
+    <template
+      data-cample
+      data-src="/api/text"
+      data-method="get"
+      data-after="click:.getText"
+      data-mode="one"
+    >
+    </template>
+  </p>
+</div>
+<script src="https://unpkg.com/cample-html@0.0.3"></script>
+```
+
 ## Installation
 
 Cample-html can be installed in several ways, which are described in this article. This tool is a simple javascript file that is connected in the usual way through a `script`, or using the `import` construct in an environment that supports this (webpack build, parcel build etc.). The first and easiest way is to install using a CDN.
@@ -72,13 +113,13 @@ Along the path node-modules/cample-html/dist you can find two files that contain
 
 ### Manual download
 
-You can install the package by simply [downloading](https://unpkg.com/cample-html@0.0.2/dist/cample-html.min.js) it as a file and moving it to the project folder.
+You can install the package by simply [downloading](https://unpkg.com/cample-html@0.0.3/dist/cample-html.min.js) it as a file and moving it to the project folder.
 
 ```html
 <script src="./cample-html.min.js"></script>
 ```
 
-If, for some reason, you do not need the minified file, then you can download the full file from this [link](https://unpkg.com/cample-html@0.0.2/dist/cample-html.js).
+If, for some reason, you do not need the minified file, then you can download the full file from this [link](https://unpkg.com/cample-html@0.0.3/dist/cample-html.js).
 
 ```html
 <script src="./cample-html.js"></script>
@@ -92,8 +133,8 @@ This method involves connecting the file through a third-party resource, which p
 
 ```html
 <script
-  src="https://unpkg.com/cample-html@0.0.2"
-  integrity="sha384-x7ZbNznbQ9iOUOb9vN7HvbKP6xZoMkivTpas5u1zfeMYkgWOF2Y+zHNd5+fYr3LN"
+  src="https://unpkg.com/cample-html@0.0.3"
+  integrity="sha384-8mZtz6xTSNyJniv3xBUE6nBw3Sc+4HEyMa0XXfxx4KAKygzKiZizaNMBd0ntLpmL"
   crossorigin="anonymous"
 ></script>
 ```
@@ -166,6 +207,24 @@ This attribute specifies the request method that is sent to the server. The defa
 ```
 
 Only `post` and `get` methods are currently supported. Other methods will be added in future versions.
+
+### data-after
+
+The data-after property specifies after which event the request will be sent to the server. The value of the property is the string of the following construction `${event}:${selectors}`, where event is the event after which the request will be sent. and selectors are the targets to which event handlers will be assigned
+
+```html
+<template data-after="click:.target"></template>
+```
+
+The HTML that comes from the server will change to a new one each time in the DOM if events are triggered.
+
+### data-mode
+
+This property specifies the mode of sending requests to the server and replacing HTML in the real DOM. Takes two values `one` and `all`. The first value makes it so that the request to the server will be sent once, and after that all event handlers that were assigned by `selectors` will be removed and the second value, by default, sends a request every time the event is triggered. At the same time, HTML also changes once and changes constantly.
+
+```html
+<template data-mode="one"></template>
+```
 
 ### data-status
 
