@@ -44,6 +44,10 @@ Here are a few small advantages that the module has:
 
 And other advantages that will be visible when working with the module.
 
+### What is the difference between cample-html and htmx?
+
+The most important difference between cample-html and htmx is a slightly different project idea. The main goal of the project is to create a small template language over HTML that will allow you to work with the server. For this, the `template` syntax is used and for this purpose `createTemplate` was created, which serves as a small function into which you can pass a string, and at the output you will receive a ready-made `template` that you can work with. It is planned to create a separate file extension that will allow you to conveniently work with the server without `template` and other things. Therefore, in cample-html, events for `template` are optional, because this is intended for the future creation of something like index.php, where it is possible to mix regular HTML and server-side HTML.
+
 ### About server-side rendering
 
 Although the markup is generated on the server, the module <b>does not provide</b> functionality for displaying content to search robots. This is not expected in the future because this module is intended for other purposes.
