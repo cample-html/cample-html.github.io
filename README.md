@@ -273,7 +273,7 @@ const elementObj = templateFn({
   method: "POST",
   mode: "cors",
   cache: "no-cache",
-  credentials: "same-origin",
+  credentials: "same-origin", // withCredentials has been replaced by credentials
   headers: {
     "Content-Type": "text/html",
   },
