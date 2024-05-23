@@ -76,7 +76,7 @@ const elementObj = templateFn({
   get: (prop, value) => {
     if (prop === "element") {
       if (value) {
-        a.appendChild(value);
+        wrapper.appendChild(value);
       }
     }
   },
