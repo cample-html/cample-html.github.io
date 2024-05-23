@@ -69,7 +69,7 @@ const templateFn = CampleHTML.createTemplate(
   `<template data-cample data-src="/api/test" data-method="get"></template>`
 );
 
-const a = document.getElementById("wrapper");
+const wrapper = document.getElementById("wrapper");
 
 const elementObj = templateFn({
   credentials: "same-origin",
