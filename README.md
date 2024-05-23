@@ -1,6 +1,8 @@
+> As of version 0.0.4, the package switches to a `fetch` function!
+
 ## About
 
-🌐 cample-html is a small library for working with server-side html. It is based on requests sent to the server via XMLHttpRequest and processed into ready-made HTML.
+🌐 cample-html is a small library for working with server-side html. It is based on requests sent to the server via `fetch` and processed into ready-made HTML.
 
 ### Example
 
@@ -11,7 +13,7 @@
   <template data-cample data-src="/api/test" data-method="get"></template>
 </div>
 
-<script src="https://unpkg.com/cample-html@0.0.3"></script>
+<script src="https://unpkg.com/cample-html@0.0.4"></script>
 ```
 
 <b>Server route - /api/test</b>
@@ -27,7 +29,7 @@
   <div>123</div>
 </div>
 
-<script src="https://unpkg.com/cample-html@0.0.3"></script>
+<script src="https://unpkg.com/cample-html@0.0.4"></script>
 ```
 
 ### Why cample-html?
@@ -62,22 +64,23 @@ In the future, it is planned to maintain social networks, but for now the entire
 
 ### Example 1
 
-(Future versions will implement get and set functionality)
-
 ```javascript
 const templateFn = CampleHTML.createTemplate(
   `<template data-cample data-src="/api/test" data-method="get"></template>`
 );
 
-const elementObj = templateFn();
+const a = document.getElementById("wrapper");
 
-setTimeout(() => {
-  if (elementObj.element) {
-    console.log(elementObj.element);
-  } else {
-    console.log("The data hasn't arrived yet");
-  }
-}, 1000);
+const elementObj = templateFn({
+  credentials: "same-origin",
+  get: (prop, value) => {
+    if (prop === "element") {
+      if (value) {
+        a.appendChild(value);
+      }
+    }
+  },
+});
 ```
 
 ### Example 2
@@ -96,7 +99,7 @@ setTimeout(() => {
     </template>
   </p>
 </div>
-<script src="https://unpkg.com/cample-html@0.0.3"></script>
+<script src="https://unpkg.com/cample-html@0.0.4"></script>
 ```
 
 ## Installation
@@ -117,13 +120,13 @@ Along the path node-modules/cample-html/dist you can find two files that contain
 
 ### Manual download
 
-You can install the package by simply [downloading](https://unpkg.com/cample-html@0.0.3/dist/cample-html.min.js) it as a file and moving it to the project folder.
+You can install the package by simply [downloading](https://unpkg.com/cample-html@0.0.4/dist/cample-html.min.js) it as a file and moving it to the project folder.
 
 ```html
 <script src="./cample-html.min.js"></script>
 ```
 
-If, for some reason, you do not need the minified file, then you can download the full file from this [link](https://unpkg.com/cample-html@0.0.3/dist/cample-html.js).
+If, for some reason, you do not need the minified file, then you can download the full file from this [link](https://unpkg.com/cample-html@0.0.4/dist/cample-html.js).
 
 ```html
 <script src="./cample-html.js"></script>
@@ -137,8 +140,8 @@ This method involves connecting the file through a third-party resource, which p
 
 ```html
 <script
-  src="https://unpkg.com/cample-html@0.0.3"
-  integrity="sha384-8mZtz6xTSNyJniv3xBUE6nBw3Sc+4HEyMa0XXfxx4KAKygzKiZizaNMBd0ntLpmL"
+  src="https://unpkg.com/cample-html@0.0.4"
+  integrity="sha384-Pg7eVec2ZKBGSrOvLIhaoCPql1DD7GWbT04lDcNDnG0tvZUck5SGGlqhQ3l6pDo8"
   crossorigin="anonymous"
 ></script>
 ```
@@ -163,7 +166,14 @@ const templateFn = CampleHTML.createTemplate(
 );
 
 // (After the response arrives from the server) { element = template (HTMLTemplateElement type), status = 200 }
-const elementObj = templateFn({ withCredentials: false, timeout: 0 });
+const elementObj = templateFn({
+  credentials: "same-origin",
+  get: (prop, value) => {
+    if (prop === "element") {
+      console.log(value);
+    }
+  },
+});
 ```
 
 These will be the two main ways to interact with the server. In future versions, the functionality will be expanded, but the methods themselves will not change.
@@ -260,10 +270,17 @@ This function returns a function that already creates an object with values for 
 
 ```javascript
 const elementObj = templateFn({
-  withCredentials: false,
-  timeout: 0,
-  requestBody: {},
-  headers: {},
+  method: "POST",
+  mode: "cors",
+  cache: "no-cache",
+  credentials: "same-origin",
+  headers: {
+    "Content-Type": "text/html",
+  },
+  redirect: "follow",
+  get: (prop, value) => {},
+  referrerPolicy: "no-referrer",
+  body: JSON.stringify(data),
 });
 ```
 
@@ -271,8 +288,13 @@ Options object type:
 
 ```typescript
 {
-  requestBody?: Document | XMLHttpRequestBodyInit | null;
-  withCredentials?: boolean;
+  mode?:RequestMode;
+  cache?:RequestCache;
+  redirect?:RequestRedirect;
+  referrerPolicy?:ReferrerPolicy;
+  get?:(prop:string,value:any)=>void;
+  requestBody?: BodyInit | null;
+  credentials?: RequestCredentials;
   headers?:{
     [key: string]: string;
   }
@@ -298,3 +320,24 @@ Object type:
 Values are dynamically assigned to the object depending on the server response.
 
 > The status changes depending on the server response. But, the most important thing is that it is not assigned several times if it is the same. When working with `Proxy` or `Object.defineProperty` or something like that, this will not give the object unnecessary updates!
+
+#### get
+
+The get property takes the value of a function that fires every time one of the properties is updated.
+
+```javascript
+const elementObj = templateFn({
+  get: (prop, value) => {
+    switch (prop) {
+      case "element":
+        console.log("Element:");
+        console.log(value);
+        break;
+      case "status":
+        console.log("Status:");
+        console.log(value);
+        break;
+    }
+  },
+});
+```
